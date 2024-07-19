@@ -1,0 +1,28 @@
+{
+  "name": "kosmee",
+  "version": "1.0.0",
+  "main": "./backend/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "be": "nodemon ./backend/index.js",
+    "fe": "npm run dev --prefix frontend"
+  },
+  "keywords": [
+    "E-KOS",
+    "Bussines"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4"
+  }
+}
