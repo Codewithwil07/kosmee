@@ -46,23 +46,23 @@ const userLogin = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-      const isPasswordValid = await bcrypt.compare(
-        password,
-        existingUser.password
-      );
-
-      if (isPasswordValid) {
-        cerateToken(res, existingUser._id);
-
-        res.status(200).json({
-          _id: existingUser._id,
-          email: existingUser.email,
-          isAdmin: existingUser.isAdmin,
-        });
-        return;
-      }
+    if (!existingUser) {
+      return res.status(401).json({ msg: 'Invalid email or password' });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ msg: 'Invalid email or password' });
+    }
+
+    cerateToken(res, existingUser._id);
+
+    res.status(200).json({
+      _id: existingUser._id,
+      email: existingUser.email,
+      isAdmin: existingUser.isAdmin,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: error.message });
@@ -146,7 +146,18 @@ const getAllUserById = async (req, res) => {
   }
 };
 
-const deleteUserById = async (req, res) => {}
+const deleteUserById = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).send('User not found');
+    res.status(200).send('User deleted successfully');
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
+
 
 module.exports = {
   userRegister,
@@ -156,4 +167,5 @@ module.exports = {
   editProfileCurrentUser,
   getAllUsers,
   getAllUserById,
+  deleteUserById,
 };

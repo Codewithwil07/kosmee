@@ -16,7 +16,7 @@ router
 
 // Admin routes
 router.route('/admin').get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
-router
-  .get('/admin/:id', auth.autentikasi, auth.jalurAdmin, ctrl.getAllUserById)
+router.route('/admin/:id')
+  .get( auth.autentikasi, auth.jalurAdmin, ctrl.getAllUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, ctrl.deleteUserById);
 module.exports = router;
