@@ -46,12 +46,15 @@ const userLogin = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
+    if (!existingUser) {
+      return res.status(400).json({ msg: 'Invalid email or password' });
+    }
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password
     );
 
-    if (!existingUser || !isPasswordValid) {
+    if (!isPasswordValid) {
       return res.status(400).json({ msg: 'Invalid email or password' });
     }
 
@@ -102,11 +105,6 @@ const editProfileCurrentUser = async (req, res) => {
     user.tempat_tinggal = req.body.tempat_tinggal || user.tempat_tinggal;
     user.tanggal_lahir = req.body.tanggal_lahir || user.tanggal_lahir;
 
-    if (req.body.password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(req.body.password, salt);
-    }
-
     const updateUser = await user.save();
 
     res.json({
@@ -117,10 +115,34 @@ const editProfileCurrentUser = async (req, res) => {
       status: updateUser.status,
       tempat_tinggal: updateUser.tempat_tinggal,
       tanggal_lahir: updateUser.tanggal_lahir,
-      password: updateUser.password,
     });
   } else {
     res.status(404).send('User not found');
+  }
+};
+
+const editPasswordCurrentUser = async (req, res) => {
+  let { newPassword, confPassword } = req.body;
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).send('User not found');
+
+    if (user) {
+      if (newPassword !== confPassword)
+        return res.status(404).send('Password tidak cocok');
+
+      if (newPassword === confPassword) {
+        user.password = await bcrypt.hash(newPassword, 10);
+      }
+    }
+
+    user.save();
+
+    res.status(200).send('Password berhasil diubah');
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
   }
 };
 
@@ -182,6 +204,7 @@ module.exports = {
   userCurrentLogout,
   getCurrentUser,
   editProfileCurrentUser,
+  editPasswordCurrentUser,
   getAllUsers,
   getAllUserById,
   deleteUserById,

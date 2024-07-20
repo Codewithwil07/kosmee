@@ -13,6 +13,9 @@ router
   .route('/profile')
   .get(auth.autentikasi, ctrl.getCurrentUser)
   .put(auth.autentikasi, ctrl.editProfileCurrentUser);
+router
+  .route('/profile/:id')
+  .patch(auth.autentikasi, ctrl.editPasswordCurrentUser);
 
 // Admin routes
 router.route('/admin').get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
