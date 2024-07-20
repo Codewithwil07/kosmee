@@ -15,7 +15,7 @@ const userRegister = async (req, res) => {
   } = req.body;
   const existingUser = await User.findOne({ nama_lengkap, email });
   if (existingUser)
-    return res.status(404).send('nama lengkap dan email sudah ada!');
+    return res.status(400).send('nama lengkap dan email sudah ada!');
 
   password = bcrypt.hashSync(password, 10);
 
@@ -46,14 +46,13 @@ const userLogin = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
-    if (!existingUser) {
-      return res.status(401).json({ msg: 'Invalid email or password' });
-    }
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
 
-    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ msg: 'Invalid email or password' });
+    if (!existingUser || !isPasswordValid) {
+      return res.status(400).json({ msg: 'Invalid email or password' });
     }
 
     cerateToken(res, existingUser._id);
@@ -157,7 +156,25 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+const updateUserById = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id);
 
+    if (!user) return res.status(404).send('User not found');
+
+    if (user) {
+      user.email = req.body.email;
+      if (req.body.password)
+        user.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    user.save();
+
+    res.status(200).send('updated succesfully');
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
 module.exports = {
   userRegister,
@@ -168,4 +185,5 @@ module.exports = {
   getAllUsers,
   getAllUserById,
   deleteUserById,
+  updateUserById,
 };
