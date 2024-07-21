@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  nama_lengkap: { type: String, required: true },
+  nama_lengkap: { type: String, required: true, index: true },
   nomor_hp: {
     type: String,
     required: true,
@@ -10,7 +10,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    index: true,
   },
   gender: {
     type: String,
@@ -38,7 +37,6 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  isPemilik_kos: { type: Boolean, default: false },
 });
 
 const User = mongoose.model('User', UserSchema);

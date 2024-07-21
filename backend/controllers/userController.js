@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User.js');
+const Pemilik = require('../models/Pemilik.js');
+const detaiKos = require('../models/detaiKos.js');
 const cerateToken = require('../utils/createToken.js');
 
 const userRegister = async (req, res) => {
@@ -13,6 +15,7 @@ const userRegister = async (req, res) => {
     tanggal_lahir,
     password,
   } = req.body;
+
   const existingUser = await User.findOne({ nama_lengkap, email });
   if (existingUser)
     return res.status(400).send('nama lengkap dan email sudah ada!');
@@ -32,7 +35,6 @@ const userRegister = async (req, res) => {
 
   try {
     newUser.save();
-    cerateToken(res, newUser._id);
 
     res.status(200).send({ nama: nama_lengkap, email: email });
   } catch (error) {
@@ -145,6 +147,29 @@ const editPasswordCurrentUser = async (req, res) => {
     res.status(500).send('server error');
   }
 };
+
+// PEMILIK KOST
+const registerPemilikKos = async (req, res) => {
+  const { nama, email, nomor_hp, password } = req.body;
+
+  const pemilik = await Pemilik.findOne({})
+
+  const newPemilik = new Pemilik({
+    nama,
+    email,
+    nomor_hp,
+    password,
+  });
+
+  try {
+    newPemilik.save();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
+  }
+};
+
+const registerKos = async (req, res) => {};
 
 //  ADMIN KONOHA
 const getAllUsers = async (req, res) => {
