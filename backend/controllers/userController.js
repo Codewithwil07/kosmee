@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User.js');
 const Pemilik = require('../models/Pemilik.js');
-const detaiKos = require('../models/detaiKos.js');
 const cerateToken = require('../utils/createToken.js');
+const DetailKos = require('../models/DetailKos.js');
 
 const userRegister = async (req, res) => {
   let {
@@ -149,27 +149,78 @@ const editPasswordCurrentUser = async (req, res) => {
 };
 
 // PEMILIK KOST
-const registerPemilikKos = async (req, res) => {
+const registerPemilikKos = async (req, res, next) => {
   const { nama, email, nomor_hp, password } = req.body;
 
-  const pemilik = await Pemilik.findOne({})
-
-  const newPemilik = new Pemilik({
-    nama,
-    email,
-    nomor_hp,
-    password,
-  });
-
   try {
-    newPemilik.save();
+    const pemilik = await Pemilik.findOne({ email });
+    if (pemilik) return res.status(404).send('email invalid');
+
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(password, salt);
+
+    const newPemilik = new Pemilik({
+      nama,
+      email,
+      nomor_hp,
+      password: hashPassword,
+    });
+
+    await newPemilik.save();
+
+    req.newPemilik = newPemilik;
+    next();
   } catch (error) {
     console.error(error.message);
     res.status(500).send('server error');
   }
 };
 
-const registerKos = async (req, res) => {};
+const registerKos = async function (req, res) {
+  const { nama_kos, alamat, kota, target_area, harga, link_gmap } = req.body;
+  try {
+    const newPemilik = req.newPemilik;
+    const newKos = new DetailKos({
+      nama_kos,
+      alamat,
+      kota,
+      target_area,
+      harga,
+      link_gmap,
+      id_pemilik: newPemilik._id,
+    });
+    await newKos.save();
+    res.status(200).send('Pemilik dan Kos berhasil di daftarkan');
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
+  }
+};
+
+const loginpemilikKos = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const pemilik = await Pemilik.findOne({ email });
+    if (!pemilik) return res.status(404).send('email invalid');
+
+    const comparePass = await bcrypt.compare(password, pemilik.password);
+    if (!comparePass) return res.status(401).send('password incorrect');
+
+    cerateToken(res, pemilik._id);
+    res.status(200).json({ email: email, password: password });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
+  }
+};
+
+const logoutPemilikKos = async (req, res) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expiresIn: new Date(0),
+  });
+  res.status(200).json('Logged out Successfully');
+};
 
 //  ADMIN KONOHA
 const getAllUsers = async (req, res) => {
@@ -234,4 +285,8 @@ module.exports = {
   getAllUserById,
   deleteUserById,
   updateUserById,
+  registerPemilikKos,
+  registerKos,
+  loginpemilikKos,
+  logoutPemilikKos,
 };

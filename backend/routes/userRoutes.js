@@ -9,7 +9,7 @@ router.route('/').post(validInfo, ctrl.userRegister);
 router.route('/auth').post(ctrl.userLogin);
 router.get('/logout', ctrl.userCurrentLogout);
 
-// USER ROUTES  
+// USER ROUTES
 router
   .route('/profile')
   .get(auth.autentikasi, ctrl.getCurrentUser)
@@ -19,7 +19,11 @@ router
   .patch(auth.autentikasi, ctrl.editPasswordCurrentUser);
 
 // Pemilik Routes
-
+router
+  .route('/pemilik')
+  .post(validInfo, ctrl.registerPemilikKos, ctrl.registerKos);
+router.route('/pemilik/auth').post(ctrl.loginpemilikKos);
+router.route('/pemilik/logout').get(ctrl.logoutPemilikKos);
 
 // Admin routes
 router.route('/admin').get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
