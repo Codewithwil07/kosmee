@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 
-const reviewSchema = new mongoose.Schema(
+const reviewSchema = mongoose.Schema(
   {
-    nama: { type: mongoose.Schema.ObjectId, required: true, ref: 'User' },
-    rating: { type: String, required: true },
-    komentar: { type: String, required: true },
+    name: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   { timestamps: true }
 );
@@ -12,11 +17,12 @@ const reviewSchema = new mongoose.Schema(
 const DetailKosSchema = new mongoose.Schema(
   {
     nama_kos: { type: String, required: true },
+    image: { type: String },
     id_pemilik: { type: mongoose.Schema.ObjectId, ref: 'Pemilik' },
     alamat: { type: String, required: true },
     kota: { type: String, required: true, index: true },
     target_area: { type: String, required: true, index: true },
-    harga: { type: String, required: true, index: true },
+    harga_perbulan: { type: Number, required: true, index: true },
     link_gmap: { type: String, required: true },
     review: [reviewSchema],
   },

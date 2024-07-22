@@ -177,7 +177,7 @@ const registerPemilikKos = async (req, res, next) => {
 };
 
 const registerKos = async function (req, res) {
-  const { nama_kos, alamat, kota, target_area, harga, link_gmap } = req.body;
+  const { nama_kos, alamat, kota, target_area, harga_perbulan, link_gmap } = req.body;
   try {
     const newPemilik = req.newPemilik;
     const newKos = new DetailKos({
@@ -185,7 +185,7 @@ const registerKos = async function (req, res) {
       alamat,
       kota,
       target_area,
-      harga,
+      harga_perbulan,
       link_gmap,
       id_pemilik: newPemilik._id,
     });
@@ -273,6 +273,8 @@ const updateUserById = async (req, res) => {
     console.error(error.message);
   }
 };
+
+
 
 module.exports = {
   userRegister,
