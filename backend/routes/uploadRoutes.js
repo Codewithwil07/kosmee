@@ -1,6 +1,7 @@
-const multer = require('multer');
-const express = require('express');
 const path = require('path');
+const express = require('express');
+const multer = require('multer');
+
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -14,17 +15,17 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, res, cb) => {
-  const fileTypes = /jpe?g|png|webp/;
+const fileFilter = (req, file, cb) => {
+  const filetypes = /jpe?g|png|webp/;
   const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
 
   const extname = path.extname(file.originalname).toLowerCase();
   const mimetype = file.mimetype;
 
-  if (fileTypes.test(extname) && mimetypes.test(mimetype)) {
+  if (filetypes.test(extname) && mimetypes.test(mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Image only'), false);
+    cb(new Error('Images only'), false);
   }
 };
 
@@ -46,4 +47,4 @@ router.post('/', (req, res) => {
   });
 });
 
-module.exports = router;
+module.exports =  router;
