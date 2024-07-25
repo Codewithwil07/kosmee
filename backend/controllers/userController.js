@@ -128,15 +128,12 @@ const editPasswordCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
-    if (!user) return res.status(404).send('User not found');
-
-    if (user) {
-      if (newPassword !== confPassword)
-        return res.status(404).send('Password tidak cocok');
-
-      if (newPassword === confPassword) {
-        user.password = await bcrypt.hash(newPassword, 10);
-      }
+    if (!user) {
+      return res.status(404).send('User not found');
+    } else if (newPassword !== confPassword) {
+      return res.status(404).send('Password tidak cocok');
+    } else if (newPassword === confPassword) {
+      user.password = await bcrypt.hash(newPassword, 10);
     }
 
     user.save();
@@ -177,7 +174,8 @@ const registerPemilikKos = async (req, res, next) => {
 };
 
 const registerKos = async function (req, res) {
-  const { nama_kos, alamat, kota, target_area, harga_perbulan, link_gmap } = req.body;
+  const { nama_kos, alamat, kota, target_area, harga_perbulan, link_gmap } =
+    req.body;
   try {
     const newPemilik = req.newPemilik;
     const newKos = new DetailKos({
@@ -273,8 +271,6 @@ const updateUserById = async (req, res) => {
     console.error(error.message);
   }
 };
-
-
 
 module.exports = {
   userRegister,
