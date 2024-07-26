@@ -31,13 +31,15 @@ router
   .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
 router
   .route('/admin/data-user/:id')
-  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUserById)
+  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, ctrl.deleteUserById)
   .patch(auth.autentikasi, auth.jalurAdmin, validInfo, ctrl.updateUserById);
 
 router
   .route('/admin/data-kos')
-  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllDetailKos);
-
+  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllKos);
+router
+  .route('/admin/data-kos/:id')
+  .delete(auth.autentikasi, auth.jalurAdmin, ctrl.deleteKosById);
 
 module.exports = router;

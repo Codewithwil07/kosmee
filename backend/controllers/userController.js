@@ -231,7 +231,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getAllUserById = async (req, res) => {
+const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     res.json(user);
@@ -272,7 +272,7 @@ const updateUserById = async (req, res) => {
   }
 };
 
-const getAllDetailKos = async (req, res) => {
+const getAllKos = async (req, res) => {
   try {
     const result = await DetailKos.aggregate([
       {
@@ -288,15 +288,8 @@ const getAllDetailKos = async (req, res) => {
       },
       {
         $project: {
-          _id: 1,
           nama_kos: 1,
-          image: 1,
           alamat: 1,
-          kota: 1,
-          target_area: 1,
-          harga_perbulan: 1,
-          link_gmap: 1,
-          review: 1,
           nama_pemilik: '$Pemilik.nama', // Hanya menampilkan field yang diperlukan
         },
       },
@@ -308,6 +301,17 @@ const getAllDetailKos = async (req, res) => {
   }
 };
 
+const deleteKosById = async (req, res) => {
+  try {
+    const kos = await DetailKos.findByIdAndDelete(req.params.id);
+    if (!kos) return res.status(404).send('Kos not found');
+
+    res.status(200).send('Kos deleted');
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
 
 module.exports = {
   userRegister,
@@ -321,8 +325,9 @@ module.exports = {
   loginpemilikKos,
   logoutPemilikKos,
   getAllUsers,
-  getAllUserById,
+  getUserById,
   deleteUserById,
   updateUserById,
-  getAllDetailKos,
+  getAllKos,
+  deleteKosById,
 };
