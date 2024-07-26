@@ -26,10 +26,18 @@ router.route('/pemilik/auth').post(ctrl.loginpemilikKos);
 router.route('/pemilik/logout').get(ctrl.logoutPemilikKos);
 
 // Admin routes
-router.route('/admin').get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
 router
-  .route('/admin/:id')
+  .route('/admin/data-user')
+  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUsers);
+router
+  .route('/admin/data-user/:id')
   .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, ctrl.deleteUserById)
   .patch(auth.autentikasi, auth.jalurAdmin, validInfo, ctrl.updateUserById);
+
+router
+  .route('/admin/data-kos')
+  .get(auth.autentikasi, auth.jalurAdmin, ctrl.getAllDetailKos);
+
+
 module.exports = router;

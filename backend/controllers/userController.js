@@ -272,6 +272,43 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const getAllDetailKos = async (req, res) => {
+  try {
+    const result = await DetailKos.aggregate([
+      {
+        $lookup: {
+          from: 'pemiliks', // Nama koleksi yang tepat
+          localField: 'id_pemilik',
+          foreignField: '_id',
+          as: 'Pemilik',
+        },
+      },
+      {
+        $unwind: '$Pemilik', // Mengurai array Pemilik agar menjadi objek
+      },
+      {
+        $project: {
+          _id: 1,
+          nama_kos: 1,
+          image: 1,
+          alamat: 1,
+          kota: 1,
+          target_area: 1,
+          harga_perbulan: 1,
+          link_gmap: 1,
+          review: 1,
+          nama_pemilik: '$Pemilik.nama', // Hanya menampilkan field yang diperlukan
+        },
+      },
+    ]);
+    res.json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
+
 module.exports = {
   userRegister,
   userLogin,
@@ -279,12 +316,13 @@ module.exports = {
   getCurrentUser,
   editProfileCurrentUser,
   editPasswordCurrentUser,
-  getAllUsers,
-  getAllUserById,
-  deleteUserById,
-  updateUserById,
   registerPemilikKos,
   registerKos,
   loginpemilikKos,
   logoutPemilikKos,
+  getAllUsers,
+  getAllUserById,
+  deleteUserById,
+  updateUserById,
+  getAllDetailKos,
 };

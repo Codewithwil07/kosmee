@@ -17,7 +17,7 @@ const reviewSchema = mongoose.Schema(
 const DetailKosSchema = new mongoose.Schema(
   {
     nama_kos: { type: String, required: true },
-    image: { type: String, required: true }, 
+    image: [{ type: String, required: true }],
     id_pemilik: { type: mongoose.Schema.ObjectId, ref: 'Pemilik' },
     alamat: { type: String, required: true },
     kota: { type: String, required: true, index: true },
