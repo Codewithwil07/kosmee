@@ -223,7 +223,7 @@ const logoutPemilikKos = async (req, res) => {
 //  ADMIN KONOHA
 const getAllUsers = async (req, res) => {
   try {
-    const user = await User.find().limit(20);
+    const user = await User.find({}).limit(20);
     res.json(user);
   } catch (error) {
     console.error(error.message);
@@ -293,7 +293,7 @@ const getAllKos = async (req, res) => {
           nama_pemilik: '$Pemilik.nama', // Hanya menampilkan field yang diperlukan
         },
       },
-    ]);
+    ]).limit(10);
     res.json(result);
   } catch (error) {
     console.error(error.message);

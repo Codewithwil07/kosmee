@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const detailKosRoutes = require('./routes/detailKosRoutes');
 
 const port = process.env.port || 5000;
 const app = express();
@@ -16,8 +17,9 @@ connectToDatabase();
 
 app.use('/api/user', userRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/detailKos', detailKosRoutes);
 
- __dirname = path.resolve();
+__dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname + '/uploads')));
 
 app.listen(port, () => {

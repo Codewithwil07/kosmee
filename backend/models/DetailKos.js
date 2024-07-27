@@ -2,11 +2,10 @@ const mongoose = require('mongoose');
 
 const reviewSchema = mongoose.Schema(
   {
-    rating: { type: Number, required: true },
+    rating: { type: Number, required: true, default: 0 },
     comment: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: 'User',
     },
   },
@@ -23,7 +22,9 @@ const DetailKosSchema = new mongoose.Schema(
     target_area: { type: String, required: true, index: true },
     harga_perbulan: { type: Number, required: true, index: true },
     link_gmap: { type: String, required: true },
-    review: [reviewSchema],
+    reviews: [reviewSchema],
+    rating: { type: Number, required: true, default: 0 },
+  numReviews: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );
