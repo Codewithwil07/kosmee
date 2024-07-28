@@ -5,31 +5,25 @@ const DetailKos = require('../models/DetailKos.js');
 const reviewCurrentKos = async (req, res) => {
   const { rating, comment } = req.body;
   try {
-    if (!req.user) {
-      res.status(401).send('Unauthorized');
-      return;
-    }
-
     const kos = await DetailKos.findById(req.params.id);
-    const user = await User.findById(req.user._id);
-
-    console.log(user);
+    const name = await User.findById(req.user._id).select('nama_lengkap');
 
     if (kos) {
       const alreadyReviewed = kos.reviews.find(
         (r) => r.user.toString() === r.user._id.toString()
       );
+
       if (alreadyReviewed) {
-        res.status(404);
-        throw new Error('Kos  already reviewed');
+        return res.status(404).send('Kos already reviewed');
       }
     }
 
     const review = {
-      name: user.nama_lengkap,
+      nama: name.nama_lengkap,
       rating,
       comment,
     };
+
     kos.reviews.push(review);
 
     kos.numReviews = kos.reviews.length;

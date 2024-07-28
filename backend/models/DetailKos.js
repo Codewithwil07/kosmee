@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const reviewSchema = mongoose.Schema(
   {
+    nama: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
     comment: { type: String, required: true },
     user: {
@@ -24,7 +25,7 @@ const DetailKosSchema = new mongoose.Schema(
     link_gmap: { type: String, required: true },
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0 },
-  numReviews: { type: Number, required: true, default: 0 },
+    numReviews: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );
