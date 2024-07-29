@@ -21,7 +21,7 @@ const DetailKosSchema = new mongoose.Schema(
     alamat: { type: String, required: true },
     kota: { type: String, required: true, index: true },
     target_area: { type: String, required: true, index: true },
-    harga_perbulan: { type: Number, required: true, index: true },
+    harga_perbulan: { type: Number, required: true, default: 0 },
     link_gmap: { type: String, required: true },
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0 },

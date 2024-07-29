@@ -146,13 +146,26 @@ const editPasswordCurrentUser = async (req, res) => {
 };
 
 // PEMILIK KOST
-const registerPemilikKos = async (req, res, next) => {
+const registerPemilikKos = async (req, res) => {
   const { nama, email, nomor_hp, password } = req.body;
 
   try {
     const pemilik = await Pemilik.findOne({ email });
     if (pemilik) return res.status(404).send('email invalid');
 
+    if (password.length < 8) {
+      return res
+        .status(400)
+        .send('Password must be at least 8 characters long');
+    } else if (
+      !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
+    ) {
+      return res
+        .status(400)
+        .send(
+          'Password must contain at least one lowercase letter, one uppercase letter, and one digit'
+        );
+    }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -160,24 +173,22 @@ const registerPemilikKos = async (req, res, next) => {
       nama,
       email,
       nomor_hp,
-      password: hashPassword,
+      hashPassword,
     });
 
     await newPemilik.save();
 
-    req.newPemilik = newPemilik;
-    next();
+    return registerKos(req, res, newPemilik);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('server error');
   }
 };
 
-const registerKos = async function (req, res) {
+const registerKos = async function (req, res, newPemilik) {
   const { nama_kos, alamat, kota, target_area, harga_perbulan, link_gmap } =
     req.body;
   try {
-    const newPemilik = req.newPemilik;
     const newKos = new DetailKos({
       nama_kos,
       alamat,
@@ -187,8 +198,9 @@ const registerKos = async function (req, res) {
       link_gmap,
       id_pemilik: newPemilik._id,
     });
+
     await newKos.save();
-    res.status(200).send('Pemilik dan Kos berhasil di daftarkan');
+    res.status(201).send({ newPemilik, newKos });
   } catch (error) {
     console.error(error.message);
     res.status(500).send('server error');

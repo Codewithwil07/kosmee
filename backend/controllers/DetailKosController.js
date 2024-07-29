@@ -8,16 +8,6 @@ const reviewCurrentKos = async (req, res) => {
     const kos = await DetailKos.findById(req.params.id);
     const name = await User.findById(req.user._id).select('nama_lengkap');
 
-    if (kos) {
-      const alreadyReviewed = kos.reviews.find(
-        (r) => r.user.toString() === r.user._id.toString()
-      );
-
-      if (alreadyReviewed) {
-        return res.status(404).send('Kos already reviewed');
-      }
-    }
-
     const review = {
       nama: name.nama_lengkap,
       rating,
@@ -41,6 +31,11 @@ const reviewCurrentKos = async (req, res) => {
     res.status(500).send('server error');
   }
 };
+
+
+
+
+
 
 module.exports = {
   reviewCurrentKos,
