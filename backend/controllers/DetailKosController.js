@@ -2,6 +2,10 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User.js');
 const DetailKos = require('../models/DetailKos.js');
 
+
+
+
+
 const reviewCurrentKos = async (req, res) => {
   const { rating, comment } = req.body;
   try {
@@ -31,6 +35,7 @@ const reviewCurrentKos = async (req, res) => {
     res.status(500).send('server error');
   }
 };
+
 
 
 

@@ -96,8 +96,6 @@ const getCurrentUser = async (req, res) => {
 const editProfileCurrentUser = async (req, res) => {
   const user = await User.findById(req.user._id);
 
-  console.log(user);
-
   if (user) {
     user.nama_lengkap = req.body.nama_lengkap || user.nama_lengkap;
     user.nomor_hp = req.body.nomor_hp || user.nomor_hp;
@@ -147,7 +145,7 @@ const editPasswordCurrentUser = async (req, res) => {
 
 // PEMILIK KOST
 const registerPemilikKos = async (req, res) => {
-  const { nama, email, nomor_hp, password } = req.body;
+  const { nama, email, nomorHp, password } = req.fields;
 
   try {
     const pemilik = await Pemilik.findOne({ email });
@@ -172,7 +170,7 @@ const registerPemilikKos = async (req, res) => {
     const newPemilik = new Pemilik({
       nama,
       email,
-      nomor_hp,
+      nomorHp,
       hashPassword,
     });
 
@@ -186,17 +184,26 @@ const registerPemilikKos = async (req, res) => {
 };
 
 const registerKos = async function (req, res, newPemilik) {
-  const { nama_kos, alamat, kota, target_area, harga_perbulan, link_gmap } =
-    req.body;
+  const {
+    namaKos,
+    alamat,
+    jenis,
+    kota,
+    targetArea,
+    hargaPerbulan,
+    linkGmap,
+    fasilitas,
+  } = req.fields;
   try {
     const newKos = new DetailKos({
-      nama_kos,
+      namaKos,
       alamat,
+      jenis,
       kota,
-      target_area,
-      harga_perbulan,
-      link_gmap,
-      id_pemilik: newPemilik._id,
+      targetArea,
+      hargaPerbulan,
+      linkGmap,
+      fasilitas,
     });
 
     await newKos.save();
@@ -290,7 +297,7 @@ const getAllKos = async (req, res) => {
       {
         $lookup: {
           from: 'pemiliks', // Nama koleksi yang tepat
-          localField: 'id_pemilik',
+          localField: 'idPemilik',
           foreignField: '_id',
           as: 'Pemilik',
         },

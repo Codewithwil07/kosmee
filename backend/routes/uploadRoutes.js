@@ -36,15 +36,15 @@ router.post('/', (req, res) => {
   uploadSingleImage(req, res, (err) => {
     if (err) {
       res.status(400).send({ message: err.message });
-    } else if (req.file) {
-      res.status(200).send({
-        message: 'Image uploaded successfully',
-        image: `/${req.file.path}`,
-      });
+    } else if (!req.files || req.files.length < 3) {
+      res.status(422).send({ message: 'At least 3 images are required' });
     } else {
-      res.status(400).send({ message: 'No image file provided' });
+      res.status(200).send({
+        message: 'Images uploaded successfully',
+        images: req.files.map((file) => `/${file.path}`),
+      });
     }
   });
 });
 
-module.exports =  router;
+module.exports = router;

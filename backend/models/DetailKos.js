@@ -15,17 +15,28 @@ const reviewSchema = mongoose.Schema(
 
 const DetailKosSchema = new mongoose.Schema(
   {
-    nama_kos: { type: String, required: true },
-    image: [{ type: String, required: true }],
-    id_pemilik: { type: mongoose.Schema.ObjectId, ref: 'Pemilik' },
-    alamat: { type: String, required: true },
-    kota: { type: String, required: true, index: true },
-    target_area: { type: String, required: true, index: true },
-    harga_perbulan: { type: Number, required: true, default: 0 },
-    link_gmap: { type: String, required: true },
+    namaKos: { type: String, required: true, trim: true }, // added trim to remove whitespace
+    images: [{ type: String, required: true }], // renamed to images (plural) for clarity
+    idPemilik: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Pemilik',
+      required: true,
+    }, // added required: true
+    alamat: { type: String, required: true, trim: true }, // added trim to remove whitespace
+    jenis: {
+      type: String,
+      required: true,
+      trim: true,
+      enum: ['perempuan', 'laki-laki', 'campuran'],
+    },
+    kota: { type: String, required: true, index: true, trim: true }, // added trim to remove whitespace
+    targetArea: { type: String, required: true, index: true, trim: true }, // renamed to targetArea (camelCase) for consistency
+    hargaPerBulan: { type: Number, required: true, default: 0 }, // renamed to hargaPerBulan (camelCase) for consistency
+    linkGmap: { type: String, required: true, trim: true }, // added trim to remove whitespace
+    fasilitas: [{ namaFasilitas: { type: String, required: true } }], // added trim to remove whitespace
     reviews: [reviewSchema],
-    rating: { type: Number, required: true, default: 0 },
-    numReviews: { type: Number, required: true, default: 0 },
+    rating: { type: Number, required: true, default: 0, min: 0, max: 5 }, // added min and max values for rating
+    numReviews: { type: Number, required: true, default: 0, min: 0 }, // added min value for numReviews
   },
   { timestamps: true }
 );
