@@ -19,7 +19,7 @@ router
   .patch(auth.autentikasi, user.editPasswordCurrentUser);
 
 // Pemilik Routes
-router.route('/pemilik').post(validInfo, formidable(), user.registerKos);
+router.route('/pemilik').post(formidable(), validInfo, user.registerKos);
 router.route('/pemilik/auth').post(user.loginpemilikKos);
 router.route('/pemilik/logout').get(user.logoutPemilikKos);
 
