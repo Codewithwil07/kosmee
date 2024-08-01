@@ -1,15 +1,15 @@
 const { Router } = require('express');
 const router = Router();
+const formidable = require('express-formidable');
 
 const validInfo = require('../middlewares/validInfo');
 const user = require('../controllers/userController');
 const auth = require('../middlewares/authMiddleware');
 
+// USER ROUTES
 router.route('/').post(validInfo, user.userRegister);
 router.route('/auth').post(user.userLogin);
 router.get('/logout', user.userCurrentLogout);
-
-// USER ROUTES
 router
   .route('/profile')
   .get(auth.autentikasi, user.getCurrentUser)
@@ -19,9 +19,7 @@ router
   .patch(auth.autentikasi, user.editPasswordCurrentUser);
 
 // Pemilik Routes
-router
-  .route('/pemilik')
-  .post(validInfo, user.registerPemilikKos, user.registerKos);
+router.route('/pemilik').post(validInfo, formidable(), user.registerKos);
 router.route('/pemilik/auth').post(user.loginpemilikKos);
 router.route('/pemilik/logout').get(user.logoutPemilikKos);
 

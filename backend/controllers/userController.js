@@ -134,7 +134,7 @@ const editPasswordCurrentUser = async (req, res) => {
       user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    user.save();
+    await user.save();
 
     res.status(200).send('Password berhasil diubah');
   } catch (error) {
@@ -144,9 +144,22 @@ const editPasswordCurrentUser = async (req, res) => {
 };
 
 // PEMILIK KOST
-const registerPemilikKos = async (req, res) => {
-  const { nama, email, nomorHp, password } = req.fields;
 
+const registerKos = async (req, res) => {
+  const {
+    nama,
+    email,
+    nomorHp,
+    password,
+    namaKos,
+    alamat,
+    jenis,
+    kota,
+    targetArea,
+    hargaPerbulan,
+    linkGmap,
+    fasilitas,
+  } = req.fields;
   try {
     const pemilik = await Pemilik.findOne({ email });
     if (pemilik) return res.status(404).send('email invalid');
@@ -171,30 +184,11 @@ const registerPemilikKos = async (req, res) => {
       nama,
       email,
       nomorHp,
-      hashPassword,
+      password: hashPassword,
     });
 
-    await newPemilik.save();
+    const savedPemilik = await newPemilik.save();
 
-    return registerKos(req, res, newPemilik);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send('server error');
-  }
-};
-
-const registerKos = async function (req, res, newPemilik) {
-  const {
-    namaKos,
-    alamat,
-    jenis,
-    kota,
-    targetArea,
-    hargaPerbulan,
-    linkGmap,
-    fasilitas,
-  } = req.fields;
-  try {
     const newKos = new DetailKos({
       namaKos,
       alamat,
@@ -206,7 +200,17 @@ const registerKos = async function (req, res, newPemilik) {
       fasilitas,
     });
 
-    await newKos.save();
+    const savedKos = await newKos.save();
+
+    // if (!savedPemilik || !savedKos) {
+    //   if (savedPemilik) await Pemilik.findOneAndDelete(savedPemilik._id);
+    //   if (savedPemilik) await DetailKos.findOneAndDelete(savedKos._id);
+
+    //   return res
+    //     .status(401)
+    //     .json({ msg: 'Gagal menyimpan data, dikompensasional' });
+    // }
+
     res.status(201).send({ newPemilik, newKos });
   } catch (error) {
     console.error(error.message);
@@ -339,7 +343,6 @@ module.exports = {
   getCurrentUser,
   editProfileCurrentUser,
   editPasswordCurrentUser,
-  registerPemilikKos,
   registerKos,
   loginpemilikKos,
   logoutPemilikKos,

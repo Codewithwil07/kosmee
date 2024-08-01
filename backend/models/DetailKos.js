@@ -15,25 +15,24 @@ const reviewSchema = mongoose.Schema(
 
 const DetailKosSchema = new mongoose.Schema(
   {
-    namaKos: { type: String, required: true, trim: true }, // added trim to remove whitespace
-    images: [{ type: String, required: true }], // renamed to images (plural) for clarity
+    namaKos: { type: String, required: true, trim: true },
+    images: [{ type: String, required: true }],
     idPemilik: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Pemilik',
-      required: true,
-    }, // added required: true
-    alamat: { type: String, required: true, trim: true }, // added trim to remove whitespace
+    },
+    alamat: { type: String, required: true, trim: true },
     jenis: {
       type: String,
       required: true,
       trim: true,
-      enum: ['perempuan', 'laki-laki', 'campuran'],
+      enum: ['cowok', 'cewek', 'campuran'],
     },
-    kota: { type: String, required: true, index: true, trim: true }, // added trim to remove whitespace
-    targetArea: { type: String, required: true, index: true, trim: true }, // renamed to targetArea (camelCase) for consistency
-    hargaPerBulan: { type: Number, required: true, default: 0 }, // renamed to hargaPerBulan (camelCase) for consistency
-    linkGmap: { type: String, required: true, trim: true }, // added trim to remove whitespace
-    fasilitas: [{ namaFasilitas: { type: String, required: true } }], // added trim to remove whitespace
+    kota: { type: String, required: true, index: true, trim: true },
+    targetArea: { type: String, required: true, index: true, trim: true },
+    hargaPerBulan: { type: Number, required: true, default: 0 },
+    linkGmap: { type: String, required: true, trim: true },
+    fasilitas: [{ namaFasilitas: { type: String, required: true } }],
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0, min: 0, max: 5 }, // added min and max values for rating
     numReviews: { type: Number, required: true, default: 0, min: 0 }, // added min value for numReviews
