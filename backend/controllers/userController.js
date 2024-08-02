@@ -160,26 +160,33 @@ const registerKos = async (req, res) => {
     linkGmap,
     fasilitas,
   } = req.fields;
-  try {
-    const pemilik = await Pemilik.findOne({ email });
-    if (pemilik) return res.status(404).send('email invalid');
 
+  try {
+    // Check if email already exists
+    const existingPemilik = await Pemilik.findOne({ email });
+    if (existingPemilik) {
+      return res.status(400).send({ error: 'Email already exists' });
+    }
+
+    // Validate password
     if (password.length < 8) {
       return res
         .status(400)
-        .send('Password must be at least 8 characters long');
-    } else if (
-      !password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-    ) {
-      return res
-        .status(400)
-        .send(
-          'Password must contain at least one lowercase letter, one uppercase letter, and one digit'
-        );
+        .send({ error: 'Password must be at least 8 characters long' });
     }
+
+    if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+      return res.status(400).send({
+        error:
+          'Password must contain at least one lowercase letter, one uppercase letter, and one digit',
+      });
+    }
+
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
+    // Create new Pemilik
     const newPemilik = new Pemilik({
       nama,
       email,
@@ -187,8 +194,7 @@ const registerKos = async (req, res) => {
       password: hashPassword,
     });
 
-    const savedPemilik = await newPemilik.save();
-
+    // Create new Kos
     const newKos = new DetailKos({
       namaKos,
       alamat,
@@ -200,21 +206,26 @@ const registerKos = async (req, res) => {
       fasilitas,
     });
 
-    const savedKos = await newKos.save();
+    // Save both documents
+    const [savedPemilik, savedKos] = await Promise.all([
+      newPemilik.save(),
+      newKos.save(),
+    ]);
 
-    // if (!savedPemilik || !savedKos) {
-    //   if (savedPemilik) await Pemilik.findOneAndDelete(savedPemilik._id);
-    //   if (savedPemilik) await DetailKos.findOneAndDelete(savedKos._id);
+    if (!savedPemilik || !savedKos) {
+      // Rollback if either save fails
+      await Promise.all([
+        Pemilik.findOneAndDelete(savedPemilik?._id),
+        DetailKos.findOneAndDelete(savedKos?._id),
+      ]);
 
-    //   return res
-    //     .status(401)
-    //     .json({ msg: 'Gagal menyimpan data, dikompensasional' });
-    // }
+      return res.status(500).send({ error: 'Failed to save data' });
+    }
 
     res.status(201).send({ newPemilik, newKos });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('server error');
+    res.status(500).send({ error: 'Server error' });
   }
 };
 

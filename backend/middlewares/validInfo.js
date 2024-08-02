@@ -1,10 +1,14 @@
-const emailTest = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const validInfo = (req, res, next) => {
-  const { email } = req.fields;
-  if (!emailTest.test(email)) {
-    return res.status(401).send('Tolong Masukkan email yang benar');
+  const { email } = req.fields || req.body;
+
+  if (!emailRegex.test(email)) {
+    return res
+      .status(400)
+      .json({ message: 'Tolong masukkan email yang benar' });
   }
+
   next();
 };
 

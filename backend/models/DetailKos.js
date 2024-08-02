@@ -32,7 +32,7 @@ const DetailKosSchema = new mongoose.Schema(
     targetArea: { type: String, required: true, index: true, trim: true },
     hargaPerBulan: { type: Number, required: true, default: 0 },
     linkGmap: { type: String, required: true, trim: true },
-    fasilitas: [{ namaFasilitas: { type: String, required: true } }],
+    fasilitas: [{ type: String, required: true }],
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0, min: 0, max: 5 }, // added min and max values for rating
     numReviews: { type: Number, required: true, default: 0, min: 0 }, // added min value for numReviews
