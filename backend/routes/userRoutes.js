@@ -32,11 +32,5 @@ router
   .get(auth.autentikasi, auth.jalurAdmin, user.getUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, user.deleteUserById)
   .patch(auth.autentikasi, auth.jalurAdmin, validInfo, user.updateUserById);
-router
-  .route('/admin/data-kos')
-  .get(auth.autentikasi, auth.jalurAdmin, user.getAllKos);
-router
-  .route('/admin/data-kos/:id')
-  .delete(auth.autentikasi, auth.jalurAdmin, user.deleteKosById);
 
 module.exports = router;
