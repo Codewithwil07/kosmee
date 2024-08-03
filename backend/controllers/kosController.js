@@ -12,7 +12,7 @@ const getAllKos = async (req, res) => {
         $lookup: {
           from: 'pemiliks', // Nama koleksi yang tepat
           localField: 'idPemilik',
-          foreignField: '_id',
+          foreignField: 'id',
           as: 'Pemilik',
         },
       },
@@ -55,6 +55,7 @@ const deleteKosById = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
 
 
 module.exports = {

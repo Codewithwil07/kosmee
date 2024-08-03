@@ -318,7 +318,7 @@ const updateUserById = async (req, res) => {
         user.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    user.save();
+    await user.save();
 
     res.status(200).send('updated succesfully');
   } catch (error) {
@@ -341,6 +341,8 @@ const getAllPemilik = async (req, res) => {
 
     res.status(200).json({
       pemilik,
+      message: 'Pemilik berhasil ditampilkan',
+      statusCode: 200,
       totalPages: Math.ceil(count / limitNum),
       currentPage: pageNum,
     });
@@ -348,6 +350,42 @@ const getAllPemilik = async (req, res) => {
     console.error(error.message);
     res.status(500).send('Server Error');
   }
+};
+
+const updatePemilikById = async (req, res) => {
+  try {
+    const pemilik = await Pemilik.findByIdAndUpdate(req.params.id);
+
+    if (pemilik) {
+      pemilik.email = req.body.email;
+      if (req.body.password)
+        pemilik.password = await bcrypt.hash(req.body.password, 10);
+    }
+    await pemilik.save();
+
+    res.status(201).json({
+      statusCode: 201,
+      message: 'Pemilik berhasil di update',
+      pemilik,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+const deletePemilikById = async (req, res) => {
+  const pemilik = await Pemilik.findByIdAndDelete(req.params.id);
+
+  !pemilik
+    ? res.status(401).json({
+        statusCode: 401,
+        message: 'pemilik tidak ada',
+      })
+    : res.status(200).json({
+        statusCode: 201,
+        message: 'Pemilik berhasil di hapus',
+      });
 };
 
 module.exports = {
@@ -365,4 +403,6 @@ module.exports = {
   deleteUserById,
   updateUserById,
   getAllPemilik,
+  updatePemilikById,
+  deletePemilikById,
 };

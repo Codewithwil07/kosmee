@@ -25,13 +25,19 @@ router.route('/pemilik/logout').get(user.logoutPemilikKos);
 
 // Admin routes
 router
-  .route('/admin/data-user')
+  .route('/admin/dataUser')
   .get(auth.autentikasi, auth.jalurAdmin, user.getAllUsers);
 router
-  .route('/admin/data-user/:id')
+  .route('/admin/dataUser/:id')
   .get(auth.autentikasi, auth.jalurAdmin, user.getUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, user.deleteUserById)
   .patch(auth.autentikasi, auth.jalurAdmin, validInfo, user.updateUserById);
-
+router
+  .route('/admin/dataPemilik')
+  .get(auth.autentikasi, auth.jalurAdmin, user.getAllPemilik);
+router
+  .route('/admin/dataPemilik/:id')
+  .patch(auth.autentikasi, auth.jalurAdmin, user.getAllPemilik)
+  .delete(auth.autentikasi, auth.jalurAdmin, user.deletePemilikById);
 
 module.exports = router;

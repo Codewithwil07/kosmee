@@ -6,5 +6,4 @@ const auth = require('../middlewares/authMiddleware');
 
 // User routes
 router.route('/:id').post(auth.autentikasi, detailKos.reviewCurrentKos);
-
 module.exports = router;

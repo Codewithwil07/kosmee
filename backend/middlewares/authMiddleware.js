@@ -23,4 +23,5 @@ const jalurAdmin = async (req, res, next) => {
     ? next()
     : res.status(401).send('tidak ter-autorisasi sebagai admin');
 };
+
 module.exports = { autentikasi, jalurAdmin };
