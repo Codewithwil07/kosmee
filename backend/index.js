@@ -7,6 +7,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const detailKosRoutes = require('./routes/detailKosRoutes');
+const kosRoutes = require('./routes/kosRoutes');
 
 const port = process.env.port || 5000;
 const app = express();
@@ -18,9 +19,10 @@ connectToDatabase();
 app.use('/api/user', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/detailKos', detailKosRoutes);
+app.use('/api/kos', kosRoutes);
 
-__dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname + '/uploads')));
+const uploadsPath = path.resolve(__dirname, 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 app.listen(port, () => {
   console.log(' listening on port ' + port);

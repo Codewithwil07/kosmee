@@ -1,13 +1,10 @@
-const { Router } = require('express');
-const router = Router();
+const express = require('express');
+const router = express.Router();
 
-const user = require('../controllers/kosController');
-const auth = require('../middlewares/authMiddleware');
+const kos = require('../controllers/kosController');
+// const auth = require('../middlewares/authMiddleware');
 
 // admin routes
-router
-  .route('/admin/data-kos')
-  .get(auth.autentikasi, auth.jalurAdmin, user.getAllKos);
-router
-  .route('/admin/data-kos/:id')
-  .delete(auth.autentikasi, auth.jalurAdmin, user.deleteKosById);
+router.get('/admin/data-kos', kos.getAllKos);
+
+router.delete('/admin/data-kos/:id', kos.deleteKosById);

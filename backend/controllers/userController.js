@@ -326,6 +326,30 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const getAllPemilik = async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+  try {
+    const pageNum = Math.ceil(1, parseInt(page));
+    const limitNum = Math.ceil(1, parseInt(limit));
+
+    const pemilik = await Pemilik.find({})
+      .limit(limitNum)
+      .skip((pageNum - 1) * limitNum)
+      .exec();
+
+    const count = await Pemilik.countDocuments();
+
+    res.status(200).json({
+      pemilik,
+      totalPages: Math.ceil(count / limitNum),
+      currentPage: pageNum,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -340,4 +364,5 @@ module.exports = {
   getUserById,
   deleteUserById,
   updateUserById,
+  getAllPemilik,
 };

@@ -1,5 +1,5 @@
-const { Router } = require('express');
-const router = Router();
+const express = require('express');
+const router = express.Router();
 const formidable = require('express-formidable');
 
 const validInfo = require('../middlewares/validInfo');
@@ -32,5 +32,6 @@ router
   .get(auth.autentikasi, auth.jalurAdmin, user.getUserById)
   .delete(auth.autentikasi, auth.jalurAdmin, user.deleteUserById)
   .patch(auth.autentikasi, auth.jalurAdmin, validInfo, user.updateUserById);
+
 
 module.exports = router;

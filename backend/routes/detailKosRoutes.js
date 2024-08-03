@@ -1,10 +1,10 @@
-const { Router } = require('express');
-const router = Router();
+const express = require('express');
+const router = express.Router();
 
-const product = require('../controllers/DetailKosController');
+const detailKos = require('../controllers/DetailKosController');
 const auth = require('../middlewares/authMiddleware');
 
 // User routes
-router.route('/:id').post(auth.autentikasi, product.reviewCurrentKos);
+router.route('/:id').post(auth.autentikasi, detailKos.reviewCurrentKos);
 
 module.exports = router;
