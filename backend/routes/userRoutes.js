@@ -15,8 +15,8 @@ router
   .get(auth.autentikasi, user.getCurrentUser)
   .put(auth.autentikasi, validInfo, user.editProfileCurrentUser);
 router
-  .route('/profile/:id')
-  .patch(auth.autentikasi, user.editPasswordCurrentUser);
+  .route('/changePassword/:id')
+  .patch(auth.autentikasi, user.changePasswordCurrentUser);
 
 // Pemilik Routes
 router.route('/pemilik').post(formidable(), validInfo, user.registerKos);
@@ -37,7 +37,7 @@ router
   .get(auth.autentikasi, auth.jalurAdmin, user.getAllPemilik);
 router
   .route('/admin/dataPemilik/:id')
-  .patch(auth.autentikasi, auth.jalurAdmin, user.getAllPemilik)
+  .patch(auth.autentikasi, auth.jalurAdmin, validInfo, user.updatePemilikById)
   .delete(auth.autentikasi, auth.jalurAdmin, user.deletePemilikById);
 
 module.exports = router;

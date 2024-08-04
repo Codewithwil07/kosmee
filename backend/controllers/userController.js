@@ -121,7 +121,7 @@ const editProfileCurrentUser = async (req, res) => {
   }
 };
 
-const editPasswordCurrentUser = async (req, res) => {
+const changePasswordCurrentUser = async (req, res) => {
   let { newPassword, confPassword } = req.body;
   try {
     const user = await User.findById(req.params.id);
@@ -329,8 +329,8 @@ const updateUserById = async (req, res) => {
 const getAllPemilik = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   try {
-    const pageNum = Math.ceil(1, parseInt(page));
-    const limitNum = Math.ceil(1, parseInt(limit));
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 20;
 
     const pemilik = await Pemilik.find({})
       .limit(limitNum)
@@ -375,17 +375,27 @@ const updatePemilikById = async (req, res) => {
 };
 
 const deletePemilikById = async (req, res) => {
-  const pemilik = await Pemilik.findByIdAndDelete(req.params.id);
+  try {
+    const pemilik = await Pemilik.findByIdAndDelete(req.params.id);
 
-  !pemilik
-    ? res.status(401).json({
-        statusCode: 401,
-        message: 'pemilik tidak ada',
-      })
-    : res.status(200).json({
-        statusCode: 201,
-        message: 'Pemilik berhasil di hapus',
+    if (!pemilik) {
+      return res.status(404).json({
+        statusCode: 404,
+        message: 'Pemilik tidak ditemukan',
       });
+    }
+
+    res.status(200).json({
+      statusCode: 200,
+      message: 'Pemilik berhasil dihapus',
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Server error',
+    });
+  }
 };
 
 module.exports = {
@@ -394,7 +404,7 @@ module.exports = {
   userCurrentLogout,
   getCurrentUser,
   editProfileCurrentUser,
-  editPasswordCurrentUser,
+  changePasswordCurrentUser,
   registerKos,
   loginpemilikKos,
   logoutPemilikKos,

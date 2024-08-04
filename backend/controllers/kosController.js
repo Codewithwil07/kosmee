@@ -3,11 +3,11 @@ const DetailKos = require('../models/DetailKos.js');
 // Fitures controllers
 const fetchFavoriteKos = async (req, res) => {
   try {
-    const kos = await DetailKos.find().where('ratings').gt(2);
+    const kos = await DetailKos.find().where('ratings').gt(1); // greater than
 
     if (kos.length === 0) return res.status(404).send('Tidak ada kos favorite');
 
-    res.status(200).json({ favoriteKos: kos });
+    res.status(200).json(kos);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server error');
@@ -18,8 +18,8 @@ const fetchFavoriteKos = async (req, res) => {
 const getAllKos = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   try {
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.max(1, parseInt(limit));
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 20;
 
     const result = await DetailKos.aggregate([
       {
@@ -35,7 +35,7 @@ const getAllKos = async (req, res) => {
       },
       {
         $project: {
-          nama_kos: 1,
+          namaKos: 1,
           alamat: 1,
           nama_pemilik: '$Pemilik.nama', // Hanya menampilkan field yang diperlukan
         },

@@ -76,8 +76,8 @@ const reviewCurrentKos = async (req, res) => {
 
     kos.numReviews = kos.reviews.length;
 
-    kos.rating =
-      kos.reviews.reduce((acc, item) => acc + item.rating, 0) /
+    kos.ratings =
+      kos.reviews.reduce((acc, item) => acc + item.ratings, 0) /
       kos.reviews.length;
 
     const newComment = await kos.save();
