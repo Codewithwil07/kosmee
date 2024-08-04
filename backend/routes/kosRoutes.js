@@ -4,6 +4,9 @@ const router = express.Router();
 const kos = require('../controllers/kosController');
 const auth = require('../middlewares/authMiddleware');
 
+// Fitures controller
+router.route('/').get(kos.fetchFavoriteKos);
+
 // admin routes
 router.get('/admin/dataKos', auth.autentikasi, auth.jalurAdmin, kos.getAllKos);
 router.delete(

@@ -1,5 +1,19 @@
 const DetailKos = require('../models/DetailKos.js');
 
+// Fitures controllers
+const fetchFavoriteKos = async (req, res) => {
+  try {
+    const kos = await DetailKos.find().where('ratings').gt(2);
+
+    if (kos.length === 0) return res.status(404).send('Tidak ada kos favorite');
+
+    res.status(200).json({ favoriteKos: kos });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
+  }
+};
+
 // Admin controller
 const getAllKos = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
@@ -56,9 +70,12 @@ const deleteKosById = async (req, res) => {
   }
 };
 
+// User Controller
 
+// Pemilik Controller
 
 module.exports = {
   getAllKos,
   deleteKosById,
+  fetchFavoriteKos,
 };

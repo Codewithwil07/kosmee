@@ -34,8 +34,8 @@ const DetailKosSchema = new mongoose.Schema(
     linkGmap: { type: String, required: true, trim: true },
     fasilitas: [{ type: String, required: true }],
     reviews: [reviewSchema],
-    rating: { type: Number, required: true, default: 0, min: 0, max: 5 }, // added min and max values for rating
-    numReviews: { type: Number, required: true, default: 0, min: 0 }, // added min value for numReviews
+    rating: { type: Number, required: true, default: 0 }, // added min and max values for rating
+    numReviews: { type: Number, required: true, default: 0 }, // added min value for numReviews
   },
   { timestamps: true }
 );
