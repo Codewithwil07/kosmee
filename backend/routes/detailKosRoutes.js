@@ -6,4 +6,10 @@ const auth = require('../middlewares/authMiddleware');
 
 // User routes
 router.route('/:id').post(auth.autentikasi, detailKos.reviewCurrentKos);
+
+// Pemilik routes
+router
+  .route('/')
+  .get(auth.autentikasi, auth.jalurPemilik, detailKos.editProfileCurrentKos);
+
 module.exports = router;

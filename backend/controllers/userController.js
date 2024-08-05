@@ -4,6 +4,7 @@ const Pemilik = require('../models/Pemilik.js');
 const cerateToken = require('../utils/createToken.js');
 const DetailKos = require('../models/DetailKos.js');
 
+// user controllers
 const userRegister = async (req, res) => {
   let {
     nama_lengkap,
@@ -66,6 +67,7 @@ const userLogin = async (req, res) => {
       _id: existingUser._id,
       email: existingUser.email,
       isAdmin: existingUser.isAdmin,
+      isPemilik: existingUser.isPemilik,
     });
   } catch (error) {
     console.error(error.message);
@@ -81,18 +83,7 @@ const userCurrentLogout = async (req, res) => {
   res.status(200).json('Logged out Successfully');
 };
 
-// USER
-const getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.user._id);
-  user
-    ? res.status(200).json({
-        _id: user._id,
-        username: user.nama_lengkap,
-        email: user.email,
-      })
-    : res.status(404).json({ message: 'User not found' });
-};
-
+// both
 const editProfileCurrentUser = async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -144,7 +135,6 @@ const changePasswordCurrentUser = async (req, res) => {
 };
 
 // PEMILIK KOST
-
 const registerKos = async (req, res) => {
   const {
     nama,
@@ -159,6 +149,8 @@ const registerKos = async (req, res) => {
     hargaPerbulan,
     linkGmap,
     fasilitas,
+    deskripsiKos,
+    peraturanKos,
   } = req.fields;
 
   try {
@@ -173,11 +165,12 @@ const registerKos = async (req, res) => {
       !kota ||
       !targetArea ||
       !hargaPerbulan ||
-      !linkGmap
+      !linkGmap ||
+      !deskripsiKos ||
+      !peraturanKos
     ) {
       return res.status(400).send({
-        error:
-          'Semua field wajib diisi: namaKos, alamat, jenis, kota, targetArea, hargaPerbulan, linkGmap',
+        error: 'Semua field wajib diisi',
       });
     }
 
@@ -223,6 +216,8 @@ const registerKos = async (req, res) => {
       hargaPerbulan,
       linkGmap,
       fasilitas,
+      deskripsiKos,
+      peraturanKos,
     });
 
     await newPemilik.save();
@@ -402,7 +397,6 @@ module.exports = {
   userRegister,
   userLogin,
   userCurrentLogout,
-  getCurrentUser,
   editProfileCurrentUser,
   changePasswordCurrentUser,
   registerKos,

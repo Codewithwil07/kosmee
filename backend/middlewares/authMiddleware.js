@@ -24,4 +24,10 @@ const jalurAdmin = async (req, res, next) => {
     : res.status(401).send('tidak ter-autorisasi sebagai admin');
 };
 
-module.exports = { autentikasi, jalurAdmin };
+const jalurPemilik = async (req, res, next) => {
+  req.user && req.user.isPemilik === true
+    ? next()
+    : res.status(401).send('tidak ter-autorisasi sebagai pemilik');
+};
+
+module.exports = { autentikasi, jalurAdmin, jalurPemilik };

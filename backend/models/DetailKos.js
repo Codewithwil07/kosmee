@@ -26,13 +26,15 @@ const DetailKosSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['cowok', 'cewek', 'campuran'],
+      enum: ['Putra', 'Putri', 'Campuran'],
     },
     kota: { type: String, required: true, index: true, trim: true },
     targetArea: { type: String, required: true, index: true, trim: true },
     hargaPerBulan: { type: Number, required: true, default: 0 },
     linkGmap: { type: String, required: true, trim: true },
     fasilitas: [{ type: String, required: true }],
+    deskripsiKos: { type: String, required: true, trim: true },
+    peraturanKos: [{ type: String, required: true, trim: true }],
     reviews: [reviewSchema],
     ratings: { type: Number, required: true, default: 0 }, // added min and max values for rating
     numReviews: { type: Number, required: true, default: 0 }, // added min value for numReviews

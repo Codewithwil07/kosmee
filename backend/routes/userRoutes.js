@@ -12,7 +12,6 @@ router.route('/auth').post(user.userLogin);
 router.get('/logout', user.userCurrentLogout);
 router
   .route('/profile')
-  .get(auth.autentikasi, user.getCurrentUser)
   .put(auth.autentikasi, validInfo, user.editProfileCurrentUser);
 router
   .route('/changePassword/:id')

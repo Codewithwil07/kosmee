@@ -1,6 +1,82 @@
 const User = require('../models/User.js');
 const DetailKos = require('../models/DetailKos.js');
 
+// user controller
+const reviewCurrentKos = async (req, res) => {
+  const { rating, comment } = req.body;
+  try {
+    const kos = await DetailKos.findById(req.params.id);
+    const name = await User.findById(req.user._id).select('nama_lengkap');
+
+    if (!kos) return res.status(404).send('Kos not found');
+
+    const review = {
+      nama: name.nama_lengkap,
+      rating,
+      comment,
+    };
+
+    kos.reviews.push(review);
+
+    kos.numReviews = kos.reviews.length;
+
+    kos.ratings =
+      kos.reviews.reduce((acc, item) => acc + item.ratings, 0) /
+      kos.reviews.length;
+
+    const newComment = await kos.save();
+
+    return res.status(200).json(newComment);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
+  }
+};
+
+// pemilik controller
+const editProfileCurrentKos = async (req, res) => {
+  // const {
+  //   namaKos,
+  //   alamat,
+  //   jenis,
+  //   kota,
+  //   targetArea,
+  //   hargaPerbulan,
+  //   linkGmap,
+  //   deskripsiKos,
+  //   peraturanKos,
+  // } = req.fields;
+  try {
+    // if (
+    //   !nama ||
+    //   !email ||
+    //   !nomorHp ||
+    //   !password ||
+    //   !namaKos ||
+    //   !alamat ||
+    //   !jenis ||
+    //   !kota ||
+    //   !targetArea ||
+    //   !hargaPerbulan ||
+    //   !linkGmap ||
+    //   !deskripsiKos ||
+    //   !peraturanKos
+    // ) {
+    //   return res.status(400).send({
+    //     error: 'Semua field wajib diisi',
+    //   });
+    // }
+
+    res.status(201).json({
+      statusCode: 201,
+      message: 'Kos Berhasil di ubah',
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('server error');
+  }
+};
+
 // Admin controller
 const getAllKos = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
@@ -57,42 +133,9 @@ const deleteKosById = async (req, res) => {
   }
 };
 
-// user controller
-const reviewCurrentKos = async (req, res) => {
-  const { rating, comment } = req.body;
-  try {
-    const kos = await DetailKos.findById(req.params.id);
-    const name = await User.findById(req.user._id).select('nama_lengkap');
-
-    if (!kos) return res.status(404).send('Kos not found');
-
-    const review = {
-      nama: name.nama_lengkap,
-      rating,
-      comment,
-    };
-
-    kos.reviews.push(review);
-
-    kos.numReviews = kos.reviews.length;
-
-    kos.ratings =
-      kos.reviews.reduce((acc, item) => acc + item.ratings, 0) /
-      kos.reviews.length;
-
-    const newComment = await kos.save();
-
-    return res.status(200).json(newComment);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send('server error');
-  }
-};
-
-// pemilik controller
-
 module.exports = {
   getAllKos,
   deleteKosById,
   reviewCurrentKos,
+  editProfileCurrentKos,
 };

@@ -37,6 +37,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isPemilik: { type: Boolean, default: false },
 });
 
 const User = mongoose.model('User', UserSchema);
