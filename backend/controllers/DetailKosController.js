@@ -35,39 +35,54 @@ const reviewCurrentKos = async (req, res) => {
 
 // pemilik controller
 const editProfileCurrentKos = async (req, res) => {
-  // const {
-  //   namaKos,
-  //   alamat,
-  //   jenis,
-  //   kota,
-  //   targetArea,
-  //   hargaPerbulan,
-  //   linkGmap,
-  //   deskripsiKos,
-  //   peraturanKos,
-  // } = req.fields;
+  const {
+    namaKos,
+    alamat,
+    jenis,
+    kota,
+    targetArea,
+    hargaPerbulan,
+    linkGmap,
+    deskripsiKos,
+    peraturanKos,
+  } = req.fields;
   try {
-    // if (
-    //   !nama ||
-    //   !email ||
-    //   !nomorHp ||
-    //   !password ||
-    //   !namaKos ||
-    //   !alamat ||
-    //   !jenis ||
-    //   !kota ||
-    //   !targetArea ||
-    //   !hargaPerbulan ||
-    //   !linkGmap ||
-    //   !deskripsiKos ||
-    //   !peraturanKos
-    // ) {
-    //   return res.status(400).send({
-    //     error: 'Semua field wajib diisi',
-    //   });
-    // }
+    if (
+      !namaKos ||
+      !alamat ||
+      !jenis ||
+      !kota ||
+      !targetArea ||
+      !hargaPerbulan ||
+      !linkGmap ||
+      !deskripsiKos ||
+      !peraturanKos
+    ) {
+      return res.status(400).send({
+        error: 'Semua field wajib di isi',
+      });
+    }
+
+    const detailKos = await DetailKos.findByIdAndUpdate(req.params.id);
+
+    if (!detailKos) res.status(404).json({ msg: 'Kos tidak ada' });
+
+    if (detailKos) {
+      detailKos.namaKos = namaKos;
+      detailKos.alamat = alamat;
+      detailKos.jenis = jenis;
+      detailKos.kota = kota;
+      detailKos.targetArea = targetArea;
+      detailKos.hargaPerBulan = hargaPerbulan;
+      detailKos.linkGmap = linkGmap;
+      detailKos.deskripsiKos = deskripsiKos;
+      detailKos.peraturanKos = peraturanKos;
+    }
+
+    await detailKos.save();
 
     res.status(201).json({
+      detailKos,
       statusCode: 201,
       message: 'Kos Berhasil di ubah',
     });

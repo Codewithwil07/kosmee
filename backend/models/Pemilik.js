@@ -6,6 +6,7 @@ const PemilikSchema = new mongoose.Schema({
   nomorHp: { type: String, required: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, required: true, default: false },
+  isPemilik: { type: Boolean, required: true, default: true },
 });
 
 const Pemilik = mongoose.model('Pemilik', PemilikSchema);

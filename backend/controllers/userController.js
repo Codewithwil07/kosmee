@@ -172,7 +172,7 @@ const registerKos = async (req, res) => {
       return res.status(400).send({
         error: 'Semua field wajib diisi',
       });
-    }
+    } 
 
     // Check if email already exists
     const existingPemilik = await Pemilik.findOne({ email });
