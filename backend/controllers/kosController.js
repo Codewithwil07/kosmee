@@ -14,6 +14,22 @@ const fetchFavoriteKos = async (req, res) => {
   }
 };
 
+const fetchRecomendedKosByLocated = async (req, res) => {
+  try {
+    const kos = await DetailKos.find().where('kota').equals(req.params.kota);
+
+    if (!kos || kos.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'Tidak ada kos yang ditemukan di kota ini.' });
+    }
+
+    res.status(200).json(kos);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 // User Controller
 
 // Pemilik Controller
@@ -75,7 +91,8 @@ const deleteKosById = async (req, res) => {
 };
 
 module.exports = {
+  fetchFavoriteKos,
+  fetchRecomendedKosByLocated,
   getAllKos,
   deleteKosById,
-  fetchFavoriteKos,
 };

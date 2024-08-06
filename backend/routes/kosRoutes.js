@@ -6,6 +6,7 @@ const auth = require('../middlewares/authMiddleware');
 
 // Fitures controller
 router.route('/').get(kos.fetchFavoriteKos);
+router.route('/:kota').get(kos.fetchRecomendedKosByLocated);
 
 // admin routes
 router.get('/admin/dataKos', auth.autentikasi, auth.jalurAdmin, kos.getAllKos);
