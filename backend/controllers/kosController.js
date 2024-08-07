@@ -1,6 +1,44 @@
 const DetailKos = require('../models/DetailKos.js');
 
-// Fitures controllers
+///--------- Fitures controllers
+
+// Search dan filtering
+const fetchKosByPrice = async (req, res) => {
+  const harga = req.params;
+  harga = parseInt(harga, 10);
+
+  if (isNaN(harga)) {
+    res.status(404).send('Bukan Nomor');
+  }
+  try {
+    if (harga >= 100000 && harga <= 300000) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else if (harga >= 300000 && harga <= 500000) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else if (harga >= 500000 && harga <= 1000000) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else if (harga >= 1000000 && harga <= 2000000) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else if (harga >= 2000000 && harga <= 5000000) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else if ((harga = 5000000)) {
+      const kos = await DetailKos.where('hargaPerbulan').equals(harga);
+      res.status(200).send(kos);
+    } else {
+      res.status(400).send('Harga tidak valid');
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Error fetching:', error.message);
+  }
+};
+//
+
 const fetchFavoriteKos = async (req, res) => {
   try {
     const kos = await DetailKos.find().where('ratings').gt(3); // greater than
@@ -29,6 +67,8 @@ const fetchRecomendedKosByLocated = async (req, res) => {
     console.error(error.message);
   }
 };
+
+//-----------
 
 // User Controller
 
@@ -91,6 +131,7 @@ const deleteKosById = async (req, res) => {
 };
 
 module.exports = {
+  fetchKosByPrice,
   fetchFavoriteKos,
   fetchRecomendedKosByLocated,
   getAllKos,
