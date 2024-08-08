@@ -5,8 +5,8 @@ const kos = require('../controllers/kosController');
 const auth = require('../middlewares/authMiddleware');
 
 // Fitures controller
-router.route('/:harga').get(kos.fetchKosByPrice);
-router.route('/').get(kos.fetchFavoriteKos);
+router.route('/').get(kos.searchAndFilterkos);
+router.route('/favoriteKos').get(kos.fetchFavoriteKos);
 router.route('/:kota').get(kos.fetchRecomendedKosByLocated);
 
 // admin routes
