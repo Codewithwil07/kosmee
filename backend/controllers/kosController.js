@@ -4,11 +4,6 @@ const DetailKos = require('../models/DetailKos.js');
 
 // Search dan filtering
 const searchAndFilterkos = async (req, res) => {
-  const parsedHarga = parseInt(req.query.harga, 10);
-  console.log(typeof parsedHarga);
-  if (isNaN(parsedHarga)) {
-    res.status(404).send('Bukan Nomor');
-  }
   try {
     let filter = {};
 
@@ -16,13 +11,23 @@ const searchAndFilterkos = async (req, res) => {
       filter.kota = kota;
     }
 
-    if (req.query.parsedHarga) {
-      filter.hargaPerbulan = parsedHarga;
+    if (req.query.hargaPerbulan) {
+      const hargaPerbulan = parseInt(req.query.hargaPerbulan, 10);
+      if (isNaN(hargaPerbulan)) {
+        res.status(404).send('Bukan Nomor');
+      }
+      filter.hargaPerbulan = hargaPerbulan;
     }
 
     if (req.query.area) {
-      filter.targetArea = area;
+      filter.targetArea = targetArea;
     }
+
+    if (!req.query.kota || !req.query.hargaPerbulan || !req.query.targetArea) {
+      return res.status(404).send('No query requested');
+    }
+
+    console.log(filter);
 
     const kos = await DetailKos.find(filter);
 
@@ -33,14 +38,14 @@ const searchAndFilterkos = async (req, res) => {
     res.status(200).json(kos);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Error fetching:', error.message);
+    res.status(500).send('Server Error');
   }
 };
 //
 
 const fetchFavoriteKos = async (req, res) => {
   try {
-    const kos = await DetailKos.find().where('ratings').gt(3); // greater than
+    const kos = await DetailKos.find().where('ratings').gt(5); // greater than
 
     if (kos.length === 0) return res.status(404).send('Tidak ada kos favorite');
 
