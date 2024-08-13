@@ -4,27 +4,30 @@ const DetailKos = require('../models/DetailKos.js');
 
 // Search dan filtering
 const searchAndFilterkos = async (req, res) => {
+  const { kota, hargaPerbulan, targetArea } = req.query;
+  const hargaInt = parseInt(hargaPerbulan, 10);
+  if (isNaN(hargaInt) && hargaPerbulan) {
+    return res.status(404).send('Harga bukan angka yang valid');
+  }
+
+  // Cek apakah semua query parameter ada
+  if (Object.keys(hargaPerbulan).length === 0) {
+    return res.status(404).send('No query requested');
+  }
+
   try {
     let filter = {};
 
-    if (req.query.kota) {
+    if (kota) {
       filter.kota = kota;
     }
 
-    if (req.query.hargaPerbulan) {
-      const hargaPerbulan = parseInt(req.query.hargaPerbulan, 10);
-      if (isNaN(hargaPerbulan)) {
-        res.status(404).send('Bukan Nomor');
-      }
-      filter.hargaPerbulan = hargaPerbulan;
+    if (hargaPerbulan) {
+      filter.hargaPerbulan = hargaInt;
     }
 
-    if (req.query.area) {
+    if (targetArea) {
       filter.targetArea = targetArea;
-    }
-
-    if (!req.query.kota || !req.query.hargaPerbulan || !req.query.targetArea) {
-      return res.status(404).send('No query requested');
     }
 
     console.log(filter);
