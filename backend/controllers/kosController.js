@@ -5,34 +5,27 @@ const DetailKos = require('../models/DetailKos.js');
 // Search dan filtering
 const searchAndFilterkos = async (req, res) => {
   const { kota, hargaPerbulan, targetArea } = req.query;
-  const hargaInt = parseInt(hargaPerbulan, 10);
-  if (isNaN(hargaInt) && hargaPerbulan) {
-    return res.status(404).send('Harga bukan angka yang valid');
+
+  let hargaMaximax = null;
+  let hargaMinimax = null;
+
+  if (hargaPerbulan) {
+    const hargaKimax = hargaPerbulan.split('-');
+    hargaMaximax = parseInt(hargaKimax[0], 10);
+    hargaMinimax = parseInt(hargaKimax[1], 10);
   }
 
-  // Cek apakah semua query parameter ada
-  if (Object.keys(hargaPerbulan).length === 0) {
+  // Cek apakah query parameter ada
+  if (Object.keys(req.query).length === 0) {
     return res.status(404).send('No query requested');
   }
 
   try {
-    let filter = {};
-
-    if (kota) {
-      filter.kota = kota;
-    }
-
-    if (hargaPerbulan) {
-      filter.hargaPerbulan = hargaInt;
-    }
-
-    if (targetArea) {
-      filter.targetArea = targetArea;
-    }
-
-    console.log(filter);
-
-    const kos = await DetailKos.find(filter);
+    const kos = await DetailKos.find({
+      kota,
+      hargaPerbulan: { $gte: hargaMaximax, $lte: hargaMinimax },
+      targetArea,
+    });
 
     if (kos.length === 0) {
       return res.status(400).send('Data tidak ada');
