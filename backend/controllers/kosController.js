@@ -21,11 +21,23 @@ const searchAndFilterkos = async (req, res) => {
   }
 
   try {
-    const kos = await DetailKos.find({
-      kota,
-      hargaPerbulan: { $gte: hargaMaximax, $lte: hargaMinimax },
-      targetArea,
-    });
+    let filter = {};
+    if (kota) {
+      filter.kota = kota;
+    }
+    if (hargaMaximax !== null && hargaMaximax !== null) {
+      filter.hargaPerbulan = { $gte: hargaMaximax, $lte: hargaMinimax };
+    }
+
+    if (targetArea) {
+      filter.targetArea = targetArea;
+    }
+
+    console.log(filter);
+
+
+    const kos = await DetailKos.find(filter);
+
 
     if (kos.length === 0) {
       return res.status(400).send('Data tidak ada');
