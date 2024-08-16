@@ -30,20 +30,22 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-const uploadSingleImage = upload.single('image');
+const uploadSingleImage = upload.array('image', 10);
 
 router.post('/', (req, res) => {
   uploadSingleImage(req, res, (err) => {
     if (err) {
       res.status(400).send({ message: err.message });
-    } else if (!req.files || req.files.length < 3) {
-      res.status(422).send({ message: 'At least 3 images are required' });
-    } else {
-      res.status(200).send({
-        message: 'Images uploaded successfully',
-        images: req.files.map((file) => `/${file.path}`),
-      });
     }
+
+    if (!req.files) {
+      res.status(422).send({ message: 'At least 3 images are required' });
+    }
+
+    res.status(200).send({
+      message: 'Images uploaded successfully',
+      images: req.files.map((file) => `/${req.file.path}`),
+    });
   });
 });
 

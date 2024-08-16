@@ -9,16 +9,14 @@ const auth = require('../middlewares/authMiddleware');
 // USER ROUTES
 router.route('/').post(validInfo, user.userRegister);
 router.route('/auth').post(user.userLogin);
-router.get('/logout', user.userCurrentLogout);
-router
-  .route('/profile')
-  .put(auth.autentikasi, validInfo, user.editProfileCurrentUser);
+router.get('/logout', user.userLogout);
+router.route('/profile').put(auth.autentikasi, validInfo, user.editProfileUser);
 router
   .route('/changePassword/:id')
-  .patch(auth.autentikasi, user.changePasswordCurrentUser);
+  .patch(auth.autentikasi, user.changePasswordUser);
 
 // Pemilik Routes
-router.route('/pemilik').post(formidable(), validInfo, user.registerKos);
+router.route('/pemilik').post(validInfo, formidable(), user.registerKos);
 router.route('/pemilik/auth').post(user.loginpemilikKos);
 router.route('/pemilik/logout').get(user.logoutPemilikKos);
 

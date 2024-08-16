@@ -20,8 +20,8 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/detailKos', detailKosRoutes);
 app.use('/api/kos', kosRoutes);
 
-const uploadsPath = path.resolve(__dirname, 'uploads');
-app.use('/uploads', express.static(uploadsPath));
+__dirname = path.resolve();
+app.use(express.static(path.join(__dirname + '/uploads')));
 
 app.listen(port, () => {
   console.log(' listening on port ' + port);

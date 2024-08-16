@@ -75,7 +75,7 @@ const userLogin = async (req, res) => {
   }
 };
 
-const userCurrentLogout = async (req, res) => {
+const userLogout = async (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expiresIn: new Date(0),
@@ -84,7 +84,7 @@ const userCurrentLogout = async (req, res) => {
 };
 
 // both
-const editProfileCurrentUser = async (req, res) => {
+const editProfileUser = async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
@@ -112,7 +112,7 @@ const editProfileCurrentUser = async (req, res) => {
   }
 };
 
-const changePasswordCurrentUser = async (req, res) => {
+const changePasswordUser = async (req, res) => {
   let { newPassword, confPassword } = req.body;
   try {
     const user = await User.findById(req.params.id);
@@ -136,7 +136,7 @@ const changePasswordCurrentUser = async (req, res) => {
 
 // PEMILIK KOST
 const registerKos = async (req, res) => {
-  const {
+  let {
     nama,
     email,
     nomorHp,
@@ -151,7 +151,11 @@ const registerKos = async (req, res) => {
     fasilitas,
     deskripsiKos,
     peraturanKos,
+    images,
   } = req.fields;
+
+  fasilitas = fasilitas.split(',');
+  peraturanKos = peraturanKos.split(',');
 
   try {
     if (
@@ -167,12 +171,13 @@ const registerKos = async (req, res) => {
       !hargaPerbulan ||
       !linkGmap ||
       !deskripsiKos ||
-      !peraturanKos
+      !peraturanKos ||
+      !images
     ) {
       return res.status(400).send({
         error: 'Semua field wajib diisi',
       });
-    } 
+    }
 
     // Check if email already exists
     const existingPemilik = await Pemilik.findOne({ email });
@@ -207,18 +212,7 @@ const registerKos = async (req, res) => {
     });
 
     // Create new Kos
-    const newKos = new DetailKos({
-      namaKos,
-      alamat,
-      jenis,
-      kota,
-      targetArea,
-      hargaPerbulan,
-      linkGmap,
-      fasilitas,
-      deskripsiKos,
-      peraturanKos,
-    });
+    const newKos = new DetailKos({ ...req.fields });
 
     await newPemilik.save();
     await newKos.save();
@@ -396,9 +390,9 @@ const deletePemilikById = async (req, res) => {
 module.exports = {
   userRegister,
   userLogin,
-  userCurrentLogout,
-  editProfileCurrentUser,
-  changePasswordCurrentUser,
+  userLogout,
+  editProfileUser,
+  changePasswordUser,
   registerKos,
   loginpemilikKos,
   logoutPemilikKos,

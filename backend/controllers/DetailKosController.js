@@ -43,9 +43,14 @@ const editProfileCurrentKos = async (req, res) => {
     targetArea,
     hargaPerbulan,
     linkGmap,
+    fasilitas,
     deskripsiKos,
     peraturanKos,
   } = req.fields;
+
+  fasilitas = fasilitas.split(',');
+  peraturanKos = peraturanKos.split(',');
+
   try {
     if (
       !namaKos ||
@@ -56,6 +61,7 @@ const editProfileCurrentKos = async (req, res) => {
       !hargaPerbulan ||
       !linkGmap ||
       !deskripsiKos ||
+      fasilitas ||
       !peraturanKos
     ) {
       return res.status(400).send({
@@ -73,8 +79,9 @@ const editProfileCurrentKos = async (req, res) => {
       detailKos.jenis = jenis;
       detailKos.kota = kota;
       detailKos.targetArea = targetArea;
-      detailKos.hargaPerBulan = hargaPerbulan;
+      detailKos.hargaPerbulan = hargaPerbulan;
       detailKos.linkGmap = linkGmap;
+      detailKos.fasilitas = fasilitas;
       detailKos.deskripsiKos = deskripsiKos;
       detailKos.peraturanKos = peraturanKos;
     }
